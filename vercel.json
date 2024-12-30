@@ -4,11 +4,23 @@
             "src": "monetize/wsgi.py",
             "use": "@vercel/python",
             "config": {
-                "maxLambdaSize": "15mb", "runtime": "python3.10.0"
+                "maxLambdaSize": "15mb",
+                "runtime": "python3.10.0"
+            }
+        },
+        {
+            "src": "build_files.sh",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "staticfiles"
             }
         }
     ],
     "routes": [
+        {
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
+        },
         {
             "src": "/(.*)",
             "dest": "monetize/wsgi.py"
