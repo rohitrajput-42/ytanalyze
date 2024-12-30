@@ -3,9 +3,9 @@
 # Install dependencies
 pip install -r requirements.txt
 
-# Run collectstatic to gather all static files
+# Collect static files into the STATIC_ROOT directory
 python manage.py collectstatic --noinput
 
-# Move static files to the correct directory for Vercel
+# Create the build directory for Vercel if it doesn't exist
 mkdir -p staticfiles_build
 cp -r staticfiles/* staticfiles_build/
