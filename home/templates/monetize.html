@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %} Monetization checker {% endblock %}
+{% block main_content %}
+
+<style>
+    #url_capture{
+        margin-top: 55px;
+    }
+
+    #url_btn{
+        margin-top: 55px;
+    }
+
+    .card-custom {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: row;
+        border: 1px solid #ccc;
+    }
+    .card-image {
+        width: 150px; /* Adjust image width */
+        height: 100%;
+        object-fit: cover; /* Make sure image covers the height */
+    }
+    .card-body {
+        flex-grow: 1;
+        padding: 15px;
+        display: flex; /* Enable flexbox */
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        text-align: center; /* Center text alignment */
+    }
+
+    .container.card-container {
+        max-width: 600px;
+        margin: 45px auto;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin: 5px 0;
+        line-height: 1;
+    }
+
+    @media (min-width: 768px) {
+        .card-custom {
+            flex-direction: row; /* Row layout for larger screens */
+        }
+
+        .card-image {
+            width: 150px; /* Fixed width for larger screens */
+            height: auto;
+        }
+
+        .card-body {
+            padding: 15px 15px 15px 0px;
+        }
+
+        .card-title {
+            font-size: 1.2rem; /* Slightly larger font for larger screens */
+        }
+    }
+
+</style>
+
+<section class="hero">
+    <div class="container">
+        <h1> <img src = "/ui/img/dollar_img.png" style = "width: 65px; margin-top: -10px;"> YouTube Monetization Checker</h1>
+        <p class="lead">Check if a YouTube channel or video is monetized with the monetization checker. Is This Channel or Video Monetized?</p>
+        
+        <form class="mt-4" method = "GET">
+            <div class="row justify-content-center">
+                {% if video_url %}
+                    <div class="col-md-9">
+                        <input id = "url_capture" type="url" class="form-control form-control-lg" name = "url_capture" value = "{{ video_url }}">
+                    </div>
+                {% else %}
+                    <div class="col-md-9">
+                        <input id = "url_capture" type="url" class="form-control form-control-lg" name = "url_capture" placeholder="Paste channel URL here" required>
+                    </div>
+                {% endif %}
+                <div class="col-md-3 mt-3 mt-md-0">
+                    <button id = 'url_btn' type="submit" class="btn btn-primary btn-lg w-100">Check Status</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% if monetization_status == True %}
+
+    <div class = "container card-container">
+        <div class="card card-custom" style = "line-height: 1.5;">
+            <img src="{{avatar_url}}" class="card-image" alt="Card image">
+            <div class="card-body">
+                <h1 class="card-title" style = "color: #0f9d58;"> <img src = "/ui/img/dollar_img.png" style = "width: 35px; margin-top: -10px;"> This channel is monetized.</h1>
+            </div>
+        </div>
+    </div>
+
+{% elif monetization_status == False %}
+
+    <div class = "container card-container">
+        <div class="card card-custom" style = "line-height: 1.5;">
+            <img src="{{avatar_url}}" class="card-image" alt="Card image">
+            <div class="card-body">
+                <h1 class="card-title" style = "color: red;"> <img src = "/ui/img/no_dollar.png" style = "width: 50px; margin-top: -10px;"> This channel is not monetized.</h1>
+            </div>
+        </div>
+    </div>
+    
+{% endif %}
+
+
+
+{% endblock %}

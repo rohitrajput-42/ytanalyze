@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %} ChannelIdFinder {% endblock %}
+{% block main_content %}
+
+<style>
+    #url_capture {
+        margin-top: 55px;
+    }
+
+    #url_btn {
+        margin-top: 55px;
+    }
+
+    .card-custom {
+        display: flex;
+        flex-direction: column; /* Default to column layout for responsiveness */
+        border: 1px solid #ccc;
+        margin: 20px auto;
+        overflow: hidden;
+    }
+
+    .card-image {
+        width: 100%; /* Full width for smaller screens */
+        max-width: 150px; /* Restrict maximum width */
+        height: auto;
+        object-fit: cover;
+        margin: 0 auto; /* Center image on smaller screens */
+    }
+
+    .card-body {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: left; /* Left-align text for consistency */
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin: 5px 0;
+        line-height: 1.5;
+    }
+
+    .container.card-container {
+        max-width: 600px;
+        margin: 45px auto;
+    }
+
+    @media (min-width: 768px) {
+        .card-custom {
+            flex-direction: row; /* Row layout for larger screens */
+        }
+
+        .card-image {
+            width: 150px; /* Fixed width for larger screens */
+            height: auto;
+        }
+
+        .card-body {
+            padding: 15px 15px 15px 0px;
+        }
+
+        .card-title {
+            font-size: 1.2rem; /* Slightly larger font for larger screens */
+        }
+    }
+</style>
+
+<section class="hero">
+    <div class="container">
+        <h1>
+            <img src="https://10015.io/assets/tools/list/youtube-thumbnail-grabber.svg" style="width: 60px; margin-top: -10px;"> YouTube Channel ID Finder
+        </h1>
+        <p class="lead">Find Channel ID, information and statistics of any YouTube Channel</p>
+        
+        <form class="mt-4" method="GET">
+            <div class="row justify-content-center">
+                {% if channel_url %}
+                    <div class="col-md-9">
+                        <input id="url_capture" type="url" class="form-control form-control-lg" name="url_capture" value="{{ channel_url }}">
+                    </div>
+                {% else %}
+                    <div class="col-md-9">
+                        <input id="url_capture" type="url" class="form-control form-control-lg" name="url_capture" placeholder="Paste channel URL here" required>
+                    </div>
+                {% endif %}
+                <div class="col-md-3 mt-3 mt-md-0">
+                    <button id="url_btn" type="submit" class="btn btn-primary btn-lg w-100">Check Status</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% if channel_id %}
+    <div class="container card-container">
+        <div class="card card-custom">
+            <img src="{{ channel_avatar }}" class="card-image" alt="Card image">
+            <div class="card-body">
+                <h1 class="card-title" style = "margin-left: 10px;"><b>Channel Name</b>: {{ channel_name }}</h1>
+                <h1 class="card-title" style = "margin-left: 10px; width: 100%;"><b>Channel ID</b>: {{ channel_id }}</h1>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

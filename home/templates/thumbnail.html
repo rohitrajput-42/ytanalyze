@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %} Thumbnails Viewer {% endblock %}
+{% block main_content %}
+
+<style>
+    .thumbnail-title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card-deck {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin: 0 auto;
+    }
+
+    .card-custom {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin: 10px;
+        flex: 1 0 calc(25% - 20px); /* 4 cards per row with 20px gap */
+        max-width: calc(25% - 20px); /* Adjust width to fit within the row */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .card-image {
+        width: 100%;
+        height: 200px; /* Fixed height for uniform cards */
+        object-fit: cover;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin: 5px 0;
+    }
+
+    @media (max-width: 768px) {
+        .card-custom {
+            flex: 1 0 calc(50% - 20px); /* 2 cards per row for smaller screens */
+            max-width: calc(50% - 20px);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-custom {
+            flex: 1 0 100%; /* 1 card per row for very small screens */
+            max-width: 100%;
+        }
+    }
+</style>
+
+<section class="hero">
+    <div class="container">
+        <h1 class="thumbnail-title">
+            <img src="/ui/img/search_img.png" style="width: 60px; margin-top: -10px;"> YouTube Thumbnails Viewer
+        </h1>
+        <p class="lead text-center">View and explore all thumbnails of the YouTube channel</p>
+        
+        <form class="mt-4" method="GET">
+            <div class="row justify-content-center">
+                {% if channel_url %}
+                    <div class="col-md-9">
+                        <input id="url_capture" type="url" class="form-control form-control-lg" name="url_capture" value="{{ channel_url }}">
+                    </div>
+                {% else %}
+                    <div class="col-md-9">
+                        <input id="url_capture" type="url" class="form-control form-control-lg" name="url_capture" placeholder="Paste channel URL here" required>
+                    </div>
+                {% endif %}
+                <div class="col-md-3 mt-3 mt-md-0">
+                    <button id="url_btn" type="submit" class="btn btn-primary btn-lg w-100">Fetch Thumbnails</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% if thumbnails %}
+    <div class="container mt-5 mb-5">
+        <div class="card-deck">
+            {% for thumbnail in thumbnails %}
+                <div class="card card-custom">
+                    <img src="{{ thumbnail.url }}" class="card-image" alt="Thumbnail">
+                    <div class="card-body">
+                        <h5 class="card-title">Dimensions: {{ thumbnail.width }} x {{ thumbnail.height }}</h5>
+                        <a href="{{ thumbnail.url }}" target="_blank" class="btn btn-primary btn-sm">View Full Image</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

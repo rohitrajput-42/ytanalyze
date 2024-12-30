@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %} Home {% endblock %}
+{% block main_content %}
+
+<style>
+    .card {
+        transition: background 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%; /* Make sure the card takes full height in its container */
+    }
+
+    .card .card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden; /* Hide overflowing content */
+    }
+
+    .card .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .card .card-text {
+        flex-grow: 1;
+        overflow-y: auto; /* Allow scrolling in text if it overflows */
+    }
+
+    .card img {
+        height: 250px; /* Fixed height for image */
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .card:hover {
+        cursor: pointer;
+    }
+
+    /* Optional: to ensure card titles and bodies align properly */
+    .card-body {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+</style>
+
+<div class="container" style="text-align: center; margin-top: 50px;">
+    <div class="row justify-content-center" id="cards_lim">
+        <div class="col-md-4 d-flex justify-content-center mb-4">
+            <div class="card" style="width: 18rem;">
+                <a class="nav-link" href="{% url 'monetize' %}">
+                    <div style="padding: 15px;">
+                        <img src="/ui/img/dollar_img.png" class="card-img-top" alt="...">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">YouTube Monetization Checker</h5>
+                        <p class="card-text">You can check monetization of YouTube channel from our monetization checker tool in one click and also get all monetization related insights of a channel.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center mb-4">
+            <div class="card" style="width: 18rem;">
+                <a class="nav-link" href="{% url 'thumb_fetch' %}">
+                    <div style="padding: 15px;">
+                        <img src="https://10015.io/assets/tools/list/youtube-thumbnail-grabber.svg" class="card-img-top" alt="...">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Thumbnails Fetcher</h5>
+                        <p class="card-text">Easily retrieve high-quality YouTube video thumbnails with this simple tool. Just enter the video URL or ID, and get the perfect thumbnail image for your project, website, or social media. Fast, efficient, and hassle-free!.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center mb-4">
+            <div class="card" style="width: 18rem;">
+                <a class="nav-link" href="{% url 'channel_id' %}">
+                    <div style="padding: 15px;">
+                        <img src="/ui/img/search_img.png" class="card-img-top" alt="...">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Channel ID Finder</h5>
+                        <p class="card-text">Quickly find your YouTube Channel ID with this easy-to-use tool. Whether you're a content creator or developer, simply enter the channel link to retrieve your unique Channel ID.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
