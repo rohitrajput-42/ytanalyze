@@ -66,7 +66,7 @@
 
 <section class="hero">
     <div class="container">
-        <h1> <img src = "/ui/img/dollar_img.png" style = "width: 65px; margin-top: -10px;"> YouTube Monetization Checker</h1>
+        <h1> <img src = "{% static 'img/dollar_img.png' %}" style = "width: 65px; margin-top: -10px;"> YouTube Monetization Checker</h1>
         <p class="lead">Check if a YouTube channel or video is monetized with the monetization checker. Is This Channel or Video Monetized?</p>
         
         <form class="mt-4" method = "GET">
@@ -94,7 +94,7 @@
         <div class="card card-custom" style = "line-height: 1.5;">
             <img src="{{avatar_url}}" class="card-image" alt="Card image">
             <div class="card-body">
-                <h1 class="card-title" style = "color: #0f9d58;"> <img src = "/ui/img/dollar_img.png" style = "width: 35px; margin-top: -10px;"> This channel is monetized.</h1>
+                <h1 class="card-title" style = "color: #0f9d58;"> <img src = "{% static 'img/dollar_img.png' %}" style = "width: 35px; margin-top: -10px;"> This channel is monetized.</h1>
             </div>
         </div>
     </div>
@@ -105,7 +105,7 @@
         <div class="card card-custom" style = "line-height: 1.5;">
             <img src="{{avatar_url}}" class="card-image" alt="Card image">
             <div class="card-body">
-                <h1 class="card-title" style = "color: red;"> <img src = "/ui/img/no_dollar.png" style = "width: 50px; margin-top: -10px;"> This channel is not monetized.</h1>
+                <h1 class="card-title" style = "color: red;"> <img src = "{% static 'img/no_dollar.png' %}" style = "width: 50px; margin-top: -10px;"> This channel is not monetized.</h1>
             </div>
         </div>
     </div>
