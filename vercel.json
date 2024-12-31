@@ -12,14 +12,14 @@
         "src": "build_files.sh",
         "use": "@vercel/static-build",
         "config": {
-          "distDir": "staticfiles"
+          "distDir": "ui"
         }
       }
     ],
     "routes": [
       {
-        "src": "/static/(.*)",
-        "dest": "/static/$1"
+        "src": "/ui/(.*)",
+        "dest": "/ui/$1"
       },
       {
         "src": "/(.*)",
