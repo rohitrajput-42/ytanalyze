@@ -1,10 +1,5 @@
 import os
 from pathlib import Path
-from corsheaders.defaults import default_headers
-
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    'X-Requested-With',
-]
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-l^x$%l(=yjv&m8r!g3(gkl#cb=u-q4^zrn^-8q31^p&z@=^z&r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -34,12 +29,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'home',
-    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,7 +41,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'monetize.urls'
 
@@ -119,6 +111,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/ui/'
 
-STATIC_DIRS = [
-    os.path.join(BASE_DIR, 'ui')
+STATICFILES_DIRS = [
+    os.path.join('ui')
 ]
