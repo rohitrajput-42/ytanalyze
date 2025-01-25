@@ -1,2 +1,7 @@
+#!/bin/bash
+
+# Install Python dependencies
 pip install -r requirements.txt
-python3.10 manage.py collectstatic
+
+# Collect static files
+python manage.py collectstatic --noinput
