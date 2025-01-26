@@ -6,7 +6,7 @@ from yt_dlp import YoutubeDL
 def home(request):
     return render(request, "index.html")
 
-def get_top_videos_from_channel(channel_url, max_results=10):
+def get_top_videos_from_channel(channel_url, max_results=15):
     options = {
         'quiet': True,
         'extract_flat': True,
