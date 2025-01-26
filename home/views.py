@@ -10,7 +10,10 @@ def get_top_videos_from_channel(channel_url, max_results=15):
     options = {
         'quiet': True,
         'extract_flat': True,
-        'playlistend': max_results
+        'playlistend': max_results,
+        'no_cache_dir': True,
+        'download': False
+
     }
     with YoutubeDL(options) as ydl:
         vid_info = ydl.extract_info(channel_url, download=False)
@@ -41,7 +44,10 @@ def monetize(request):
         options = {
             'quiet': True,
             'extract_flat': True,
-            'playlistend': 1
+            'playlistend': 1,
+            'no_cache_dir': True,
+            'download': False
+
         }
         with YoutubeDL(options) as ydl:
             avatar_info = ydl.extract_info(channel_url, download=False)
