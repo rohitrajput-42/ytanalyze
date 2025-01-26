@@ -116,20 +116,20 @@ def thumb_fetch(request):
         
         with YoutubeDL(options) as ydl:
             info = ydl.extract_info(channel_url, download=False)
-            
-            print("info", info)
 
             thumbnails = info.get("thumbnails", [])
             unique_thumbnails = {thumbnail['url']: thumbnail for thumbnail in thumbnails}.values()
-            thumbnails_data = [
-                {
-                    "url": thumbnail["url"],
-                    "width": thumbnail.get("width"),
-                    "height": thumbnail.get("height"),
-                }
-                for thumbnail in unique_thumbnails
-            ]
-            
+            thumbnails_data = []
+
+            for thmb in unique_thumbnails:
+                thmb_dict = {}
+                if "resolution" in thmb and thmb["resolution"] in ["1920x1080", "686x386", "640x480"]:
+                    thmb_dict["url"] = thmb["url"]
+                    thmb_dict["width"] = thmb["width"]
+                    thmb_dict["height"] = thmb["height"]
+
+                    thumbnails_data.append(thmb_dict)    
+
             context["channel_name"] = info.get("channel")
             context["channel_avatar"] = thumbnails[-1]["url"] if thumbnails else None
             context["channel_url"] = channel_url
