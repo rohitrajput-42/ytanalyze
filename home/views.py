@@ -111,7 +111,7 @@ def thumb_fetch(request):
         options = {
             'quiet': True,
             'extract_flat': True,
-            'cookiefile': 'path/to/cookies.txt',
+            'cookies_from_browser': True,
             'playlistend': 1
         }
         
