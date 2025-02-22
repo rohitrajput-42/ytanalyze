@@ -7,7 +7,7 @@ from django.conf import settings
 def home(request):
     return render(request, "index.html")
 
-def get_top_videos_from_channel(channel_url, max_results=settings.MONETIZE_RUNTIME):
+def get_top_videos_from_channel(channel_url, max_results=int(settings.MONETIZE_RUNTIME)):
     options = {
         'quiet': True,
         'extract_flat': True,
