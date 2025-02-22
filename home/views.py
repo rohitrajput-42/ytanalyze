@@ -2,7 +2,7 @@ from django.shortcuts import render
 import requests
 import yt_dlp
 from yt_dlp import YoutubeDL
-from django.conf import settingss
+from django.conf import settings
 
 def home(request):
     return render(request, "index.html")
