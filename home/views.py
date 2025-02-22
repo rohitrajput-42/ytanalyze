@@ -3,37 +3,14 @@ import requests
 import yt_dlp
 from yt_dlp import YoutubeDL
 from django.conf import settings
+from googleapiclient.discovery import build
+import concurrent.futures
+
+API_KEY = settings.YT_API_KEY
+youtube = build("youtube", "v3", developerKey=API_KEY)
 
 def home(request):
     return render(request, "index.html")
-
-def get_top_videos_from_channel(channel_url, max_results=int(settings.MONETIZE_RUNTIME)):
-    options = {
-        'quiet': True,
-        'extract_flat': True,
-        'playlistend': max_results,
-        'no_cache_dir': True,
-        'download': False
-
-    }
-    with YoutubeDL(options) as ydl:
-        vid_info = ydl.extract_info(channel_url, download=False)
-        vids_list = []
-
-        if "entries" in vid_info and "ie_key" in vid_info["entries"][0]:
-            for x in vid_info["entries"][:20]:vids_list.append({
-                    'id': x['id'],
-                    'views': x.get('view_count', 0)
-                })
-        else:
-            for x in vid_info["entries"][0]["entries"][:20]:
-                vids_list.append({
-                    'id': x['id'],
-                    'views': x.get('view_count', 0)
-                })
-
-        sorted_vids = sorted(vids_list, key=lambda v: v['views'], reverse=True)
-        return sorted_vids[:max_results]
 
 def monetize(request):
     context = {}
@@ -41,44 +18,34 @@ def monetize(request):
     channel_url = request.GET.get("url_capture")
     
     if channel_url:
+        username = channel_url.split('@')[-1]
+        response = youtube.search().list(part="snippet", q=username, type="channel", maxResults=1).execute()
+        
+        if not response.get("items"):
+            return JsonResponse({"error": "Channel not found"})
+        
+        channel_info = response["items"][0]
+        channel_id = channel_info["id"]["channelId"]
+    
+        avatar_url = channel_info["snippet"]["thumbnails"]["high"]["url"]
 
-        options = {
-            'quiet': True,
-            'extract_flat': True,
-            'playlistend': 1,
-            'no_cache_dir': True,
-            'download': False
-
-        }
-        with YoutubeDL(options) as ydl:
-            avatar_info = ydl.extract_info(channel_url, download=False)
-        avatar_url = avatar_info["thumbnails"][-1]["url"]
-
-        monetization_status = False
-        top_videos = get_top_videos_from_channel(channel_url)
-        result = []
-        for video in top_videos:
-            video_url = f"https://www.youtube.com/watch?v={video['id']}"
-
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
-            }
-            response = requests.get(video_url, headers=headers)
-            response.raise_for_status()
-
-            if '{"key":"yt_ad","value":"1"}' in response.text:
-                result.append("yes")
-            else:
-                result.append("no")
-
-        if "yes" in result:
-            monetization_status = True
-        else:
-            monetization_status = False
+        response = youtube.search().list(part="id", channelId=channel_id, maxResults=10, order="date").execute()
+        video_ids = [item["id"]["videoId"] for item in response.get("items", []) if item["id"]["kind"] == "youtube#video"]
+        
+        if not video_ids:
+            return JsonResponse({"monetized": False})
+        
+        request = youtube.videos().list(part="snippet,contentDetails,status", id=",".join(video_ids))
+        response = request.execute()
+        
+        monetized = any(
+            video["contentDetails"].get("licensedContent", False) and not video["status"].get("madeForKids", False)
+            for video in response.get("items", [])
+        )
 
         context["avatar_url"] = avatar_url
         context["video_url"] = channel_url
-        context["monetization_status"] = monetization_status
+        context["monetization_status"] = monetized
 
         return render(request, "monetize.html", context)
     else:

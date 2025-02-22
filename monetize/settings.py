@@ -20,6 +20,8 @@ ALLOWED_HOSTS = ['*']
 
 MONETIZE_RUNTIME = os.environ.get('MONETIZE_RUNTIME')
 
+YT_API_KEY = os.environ.get('YT_API_KEY')
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -51,7 +53,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
+                # 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
