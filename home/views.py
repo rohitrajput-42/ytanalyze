@@ -2,11 +2,12 @@ from django.shortcuts import render
 import requests
 import yt_dlp
 from yt_dlp import YoutubeDL
+from django.conf import settingss
 
 def home(request):
     return render(request, "index.html")
 
-def get_top_videos_from_channel(channel_url, max_results=15):
+def get_top_videos_from_channel(channel_url, max_results=settings.MONETIZE_RUNTIME):
     options = {
         'quiet': True,
         'extract_flat': True,

@@ -1,5 +1,8 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,6 +17,8 @@ SECRET_KEY = 'django-insecure-l^x$%l(=yjv&m8r!g3(gkl#cb=u-q4^zrn^-8q31^p&z@=^z&r
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
+MONETIZE_RUNTIME = os.environ.get('MONETIZE_RUNTIME')
 
 # Application definition
 INSTALLED_APPS = [
