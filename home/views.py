@@ -14,42 +14,89 @@ def home(request):
 
 def monetize(request):
     context = {}
-    
+
     channel_url = request.GET.get("url_capture")
-    
+
     if channel_url:
-        username = channel_url.split('@')[-1]
-        response = youtube.search().list(part="snippet", q=username, type="channel", maxResults=1).execute()
-        
-        if not response.get("items"):
-            return JsonResponse({"error": "Channel not found"})
-        
-        channel_info = response["items"][0]
-        channel_id = channel_info["id"]["channelId"]
-    
-        avatar_url = channel_info["snippet"]["thumbnails"]["high"]["url"]
+        if "/@" in channel_url:
+            username = channel_url.split("/@")[-1]
+            search_response = youtube.search().list(
+                part="snippet",
+                q=username,
+                type="channel",
+                maxResults=1
+            ).execute()
 
-        response = youtube.search().list(part="id", channelId=channel_id, maxResults=10, order="date").execute()
-        video_ids = [item["id"]["videoId"] for item in response.get("items", []) if item["id"]["kind"] == "youtube#video"]
-        
-        if not video_ids:
-            return JsonResponse({"monetized": False})
-        
-        request = youtube.videos().list(part="snippet,contentDetails,status", id=",".join(video_ids))
-        response = request.execute()
-        
-        monetized = any(
-            video["contentDetails"].get("licensedContent", False) and not video["status"].get("madeForKids", False)
-            for video in response.get("items", [])
-        )
+            if not search_response.get("items"):
+                return JsonResponse({"error": "Channel not found (handle issue)"})
 
-        context["avatar_url"] = avatar_url
-        context["video_url"] = channel_url
-        context["monetization_status"] = monetized
+            channel_id = search_response["items"][0]["id"]["channelId"]
+        else:
+            channel_id = channel_url.split("/")[-1]
+
+        response = youtube.channels().list(
+            part="snippet,statistics,contentDetails,status",
+            id=channel_id
+        ).execute()
+
+        if "items" not in response or not response["items"]:
+            return JsonResponse({"error": "Channel not found (invalid ID)"})
+
+        channel = response["items"][0]
+        
+        channel_name = channel["snippet"]["title"]
+        avatar_url = channel["snippet"]["thumbnails"]["high"]["url"]
+        description = channel["snippet"]["description"]
+        country = channel["snippet"].get("country", "Not Available")
+        creation_date = channel["snippet"]["publishedAt"]
+        subscribers = int(channel["statistics"].get("subscriberCount", 0))
+        total_videos = int(channel["statistics"].get("videoCount", 0))
+        total_views = int(channel["statistics"].get("viewCount", 0))
+
+        avg_rpm = 3.00  
+        estimated_earnings = round((total_views * avg_rpm) / 1000, 2)
+
+        video_response = youtube.search().list(
+            part="id",
+            channelId=channel_id,
+            maxResults=10,
+            order="date"
+        ).execute()
+
+        video_ids = [item["id"]["videoId"] for item in video_response.get("items", []) if item["id"]["kind"] == "youtube#video"]
+        
+        monetized = False
+        if video_ids:
+            video_details = youtube.videos().list(
+                part="contentDetails,status",
+                id=",".join(video_ids)
+            ).execute()
+
+            monetized = any(
+                video["contentDetails"].get("licensedContent", False) and 
+                not video["status"].get("madeForKids", False)
+                for video in video_details.get("items", [])
+            )
+
+        context.update({
+            "channel_name": channel_name,
+            "avatar_url": avatar_url,
+            "description": description,
+            "country": country,
+            "creation_date": creation_date.split("T")[0],
+            "subscribers": subscribers,
+            "total_videos": total_videos,
+            "total_views": total_views,
+            "estimated_earnings": estimated_earnings,
+            "monetization_status": monetized,
+            "video_url": channel_url
+        })
+
+        print("context", context)
 
         return render(request, "monetize.html", context)
-    else:
-        return render(request, "monetize.html")
+
+    return render(request, "monetize.html")
 
 def channel_id(request):
     context = {}

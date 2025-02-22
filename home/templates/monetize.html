@@ -122,7 +122,27 @@
         <div class="card card-custom" style = "line-height: 1.5;">
             <img src="{{avatar_url}}" class="card-image" alt="Card image">
             <div class="card-body">
-                <h1 class="card-title" style = "color: #0f9d58;"> <img src = "{% static 'dollar_img.png' %}" style = "width: 35px; margin-top: -10px;"> This channel is monetized.</h1>
+                <h1 class="card-title"> <b>Channel Name: </b> {{ channel_name }} </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class = "container">
+        <div class = "card shadow mb-5">
+            <div class = "container">
+                <h1 class = "text-center pt-4" style = "color: #0f9d58;"> <img src = "{% static 'dollar_img.png' %}" style = "width: 35px; margin-top: -10px;"> This channel is monetized.</h1>
+                
+                <ul type = "none" class = "mt-5 mb-4">
+                    <li><h5><b> Channel Name: </b> {{ channel_name }} </h5></li>
+                    <li><h5><b> Channel Description: </b> {{ description }} </h5></li>
+                    <li><h5><b> Country: </b> {{ country }} </li>
+                    <li><h5><b> Channel Creation Date: </b> {{ creation_date }} </li>
+                    <li><h5><b> Total Subscribers Count: </b> {{ subscribers }} </li>
+                    <li><h5><b> Total videos Count: </b> {{ total_videos }} </li>
+                    <li><h5><b> Total views Count: </b> {{ total_views }} </li>
+                    <li><h5><b> Estimated earnings: </b> {{ estimated_earnings }} </li>
+                </ul>
+    
             </div>
         </div>
     </div>
@@ -133,12 +153,82 @@
         <div class="card card-custom" style = "line-height: 1.5;">
             <img src="{{avatar_url}}" class="card-image" alt="Card image">
             <div class="card-body">
-                <h1 class="card-title" style = "color: red;"> <img src = "{% static 'no_dollar.png' %}" style = "width: 50px; margin-top: -10px;"> This channel is not monetized.</h1>
+                <h1 class="card-title"> <b>Channel Name: </b> {{ channel_name }} </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class = "container">
+        <div class = "card shadow mb-5">
+            <div class = "container">
+                <h1 class = "text-center pt-4" style = "color: red;"> <img src = "{% static 'dollar_img.png' %}" style = "width: 35px; margin-top: -10px;"> This channel is not monetized.</h1>
+                
+                <ul type = "none" class = "mt-5 mb-4">
+                    <li><h5><b> Channel Name: </b> </h5></li>
+                    <li><h5><b> Channel Description: </b>  </h5></li>
+                    <li><h5><b> Country: </b>  </li>
+                    <li><h5><b> Channel Creation Date: </b>  </li>
+                    <li><h5><b> Total Subscribers Count: </b>  </li>
+                    <li><h5><b> Total videos Count: </b>  </li>
+                    <li><h5><b> Total views Count: </b>  </li>
+                    <li><h5><b> Estimated earnings: </b>  </li>
+                </ul>
+    
             </div>
         </div>
     </div>
     
 {% endif %}
+
+<div class = "container mt-5 mb-5">
+    <h6> Reaching your target audience and performing well on YouTube can be difficult, and understanding how the platform works is key. While most advice emphasizes creating original and engaging content, there’s one factor that’s often overlooked but equally important: the timing of your YouTube uploads. </h6><br />
+    <h6> Knowing when your audience is most active on the platform can significantly boost your content's reach and improve your “view velocity,” a key ranking factor on YouTube. Thankfully, with tools like the "Best Time to Post on YouTube Calculator," creators now have a valuable resource to help optimize their posting schedules. </h6>
+</div>
+
+<div class = "container mb-5">
+    <h2 class = "mb-3"><b>Monetization Checker FAQ</b></h2>
+    <h4><b>How can I tell if a YouTube channel is monetized or not?</b></h4>
+    <p> You can use our monetization checker. Simply insert the YouTube channel’s link, and in less than 1 second you can find out if the given channel is monetized, or not. </p>
+
+    <h4><b>How does this tool work?</b></h4>
+    <p> Our YouTube monetization checker works by analyzing the source code of the YouTube channel page. There, YouTube reveals whether a YouTube channel is monetized or not by providing a value, which can be “false” (for non monetized channels), or “true”, (for monetized channels). </p>
+
+    <h4><b>Is it accurate?</b></h4>
+    <p> Yes! The returned answer is 100% accurate. </p>
+
+</div>
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-sm-6 d-flex align-items-stretch">
+            <div class="card w-100 d-flex flex-column" style="padding: 40px; background-color: red; color: #fff;">
+                <h4><b> Why My Channel Is Not Monetized? 😔 </b></h4>
+                <p> Before 2018, anyone could create a new channel and start making money off it from the very first video. But since then, mostly because under pressure from advertisers who saw their Ads next to copyrighted or illegal content, YouTube introduced different requirements in order to be monetization eligible. The first one is related to a channel’s metrics. In fact, a channel needs at least 1000 subscribers and 4000 hours of watch time in order to be eligible to join the YouTube Partner Program. But, it doesn’t end here. YouTube manually reviews each channel prior to accept him into the Partner Program, and it may reject the ones that do not follow their content policy. A monetized YouTube channel could also be “demonetized” later on if YouTube believes its content does not follow the platform guidelines. </p>
+                <h5><b>Below, the most common reasons why a channel is not monetized: </b></h5>
+                <ul style = "margin-left: -15px;">
+                    <li>Taking an existing video that is not your own and publishing it to your channel.</li>
+                    <li>Image slideshows with minimal or no commentary.</li>
+                    <li>Video compilations with no added value.</li>
+                    <li>Music promotion channels (re-uploading royalty free music).</li>
+                    <li>Short videos compiled from other social media websites.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-6 d-flex align-items-stretch">
+            <div class="card w-100 d-flex flex-column" style="padding: 40px; background-color: #34c173; color: #fff;">
+                <h4><b> How To Get Monetized? 🙂 </b></h4>
+                <p> To get monetized, you need 4000 hours in the last 12 months, 1000 subscribers and, of course, original or transformative content. Examples of “monetizable” content, include: </p>
+                <ul>
+                    <li>Vlogs</li>
+                    <li>Reaction videos</li>
+                    <li>Gameplays with commentaries</li>
+                    <li>Compilations with added value (i.e. editing) and commentary</li>
+                </ul>
+                <p>If you are struggling to reach the monetization three sold, you can consider purchasing 1000 subscribers and 4000 watch hours. You may also get a monetized channel, meaning a channel with content that is already approved into the Partner Program. It is important to note that, even if you have a monetized channel, you should always adhere by YouTube monetization policies. YouTube automated algorithms are scanning channels periodically to make sure that Creators are uploading original content. If a channel is found to break the rules, YouTube will revoke its monetization status.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="loader">
     <div class="spinner"></div>
@@ -146,8 +236,16 @@
 </div>
 
 <script>
-    function showLoader() {
-      document.getElementById('loader').style.display = 'flex';
+    function showLoader(event) {
+        let urlInput = document.getElementById('url_capture').value.trim();
+        
+        if (urlInput === "") {
+            event.preventDefault(); // Prevent form submission
+            alert("Please enter a valid YouTube channel URL.");
+            return false;
+        }
+
+        document.getElementById('loader').style.display = 'flex';
     }
-  </script>
+</script>
 {% endblock %}
