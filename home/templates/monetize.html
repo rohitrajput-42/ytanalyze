@@ -140,7 +140,7 @@
                     <li><h5><b> Total Subscribers Count: </b> {{ subscribers }} </li>
                     <li><h5><b> Total videos Count: </b> {{ total_videos }} </li>
                     <li><h5><b> Total views Count: </b> {{ total_views }} </li>
-                    <li><h5><b> Estimated earnings: </b> {{ estimated_earnings }} </li>
+                    <li><h5><b> Estimated earnings: </b> $ {{ estimated_earnings }} </li>
                 </ul>
     
             </div>
@@ -164,14 +164,13 @@
                 <h1 class = "text-center pt-4" style = "color: red;"> <img src = "{% static 'dollar_img.png' %}" style = "width: 35px; margin-top: -10px;"> This channel is not monetized.</h1>
                 
                 <ul type = "none" class = "mt-5 mb-4">
-                    <li><h5><b> Channel Name: </b> </h5></li>
-                    <li><h5><b> Channel Description: </b>  </h5></li>
-                    <li><h5><b> Country: </b>  </li>
-                    <li><h5><b> Channel Creation Date: </b>  </li>
-                    <li><h5><b> Total Subscribers Count: </b>  </li>
-                    <li><h5><b> Total videos Count: </b>  </li>
-                    <li><h5><b> Total views Count: </b>  </li>
-                    <li><h5><b> Estimated earnings: </b>  </li>
+                    <li><h5><b> Channel Name: </b> {{ channel_name }} </h5></li>
+                    <li><h5><b> Channel Description: </b> {{ description }} </h5></li>
+                    <li><h5><b> Country: </b> {{ country }} </li>
+                    <li><h5><b> Channel Creation Date: </b> {{ creation_date }} </li>
+                    <li><h5><b> Total Subscribers Count: </b> {{ subscribers }} </li>
+                    <li><h5><b> Total videos Count: </b> {{ total_videos }} </li>
+                    <li><h5><b> Total views Count: </b> {{ total_views }} </li>
                 </ul>
     
             </div>

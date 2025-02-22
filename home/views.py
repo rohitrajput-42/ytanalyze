@@ -92,8 +92,6 @@ def monetize(request):
             "video_url": channel_url
         })
 
-        print("context", context)
-
         return render(request, "monetize.html", context)
 
     return render(request, "monetize.html")
