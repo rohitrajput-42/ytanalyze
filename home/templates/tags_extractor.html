@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Thumbnails Viewer {% endblock %}
+{% block main_content %}
+
+<style>
+    .thumbnail-title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card-deck {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin: 0 auto;
+    }
+
+    .card-custom {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin: 10px;
+        flex: 1 0 calc(25% - 20px); /* 4 cards per row with 20px gap */
+        max-width: calc(25% - 20px); /* Adjust width to fit within the row */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .card-image {
+        width: 100%;
+        height: 200px; /* Fixed height for uniform cards */
+        object-fit: cover;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin: 5px 0;
+    }
+
+    /* Styles for the loader */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+        .card-custom {
+            flex: 1 0 calc(50% - 20px); /* 2 cards per row for smaller screens */
+            max-width: calc(50% - 20px);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-custom {
+            flex: 1 0 100%; /* 1 card per row for very small screens */
+            max-width: 100%;
+        }
+    }
+</style>
+
+<section class="hero">
+    <div class="container">
+        <h1 class="thumbnail-title">
+            <i class="fas fa-tags" style="width: 60px; margin-top: -10px;"></i>YouTube videos Tags Extractor
+        </h1>
+        <p class="lead text-center">View and explore all tags of any YouTube video</p>
+        
+        <form class="mt-4" method="GET">
+            <div class="row justify-content-center">
+                {% if channel_url %}
+                    <div class="col-md-9">
+                        <input id="url_capture" type="url" class="form-control form-control-lg" name="url_capture" value="{{ channel_url }}">
+                    </div>
+                {% else %}
+                    <div class="col-md-9">
+                        <input id="url_capture" type="url" class="form-control form-control-lg" name="url_capture" placeholder="Paste video URL here" required>
+                    </div>
+                {% endif %}
+                <div class="col-md-3 mt-3 mt-md-0">
+                    <button id="url_btn" onclick="showLoader()" type="submit" class="btn btn-primary btn-lg w-100">Fetch Tags</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<div class="container" style = "max-width: 99%;">
+    <div class = "row">
+        {% if tags %}
+        <div class = "col-sm-7 mt-5 mb-5">
+            <div class="card shadow" style = "padding: 20px 20px 20px 30px;">
+                <ul type = "none" id = "channel_metadata">
+                    <li>
+                        <h5><b> Channel Name :  </b>  <a target = "_blank" href = "{{ channel_url }}" style = "color: black; text-decoration: none;" title = "View Channel"> {{ channel_name }} </a> </h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Channel Id : </b>  {{ channel_id }}</h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Video Name : </b>  {{ video_name }}</h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Video views count : </b>  {{ view_count }}</h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Video likes count : </b>  {{ like_count }}</h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Video comments count : </b>  {{ comment_count }}</h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Video favourites count : </b>  {{ fav_count }}</h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Video Audio Language : </b>  "{{ audio_language }}"</h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Tags : </b>  <span style = "color: #0649a0;">{{ tags|join:", " }}</span></h5>
+                    </li><br />
+                    <li>
+                        <h5><b> Video Description : </b>  {{ video_description }}</h5>
+                    </li><br />
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        <div class = "{% if tags %}col-sm-5{% else %}col-sm-12{% endif %} mt-5 mb-5">
+            <div class="card shadow" style = "padding: 20px;">
+                <h4> <b>YouTube Tag Extractor</b> </h4>
+                <p>The YouTube Tag Extractor is a useful tool that allows you to extract tags from any YouTube channel or video. It identifies and retrieves the keywords associated with the channel or video, preserving the exact order in which the creator has used them. You can leverage these tags to enhance your own content or gain valuable insights into your competitors' strategies.</p>
+                
+                <br />
+
+                <h4> <b>How to See and Find Tags in a YouTube Video?</b> </h4>
+                <p>To find tags on a YouTube video, you can use the following method:</p>
+                <ul>
+                    <li>Go to the watch page of the video.</li>
+                    <li>Right-click on the page and select "View Page Source" or "Inspect".</li>
+                    <li>Use the search function (Ctrl + F) and type in "keywords".</li>
+                    <li>Look for the line containing "keywords": followed by a list of text enclosed in quotation marks. These are the tags used for that specific video.</li>
+                </ul>
+
+                <br />
+
+                <h4> <b>How to Use the Youtube Tag Extractor?</b> </h4>
+                <p> Just paste URL of the YouTube channel or video you want to extract tags from into the box. After entering the URL, click on the 'Extract' button and the tool will work its magic. The YouTube tag finder finds and extracts tags, keywords from the channel and video. </p>
+
+                <br />
+
+                <h4><b>What are YouTube tags?</b></h4>
+                <p>YouTube tags are a form of metadata that offer information about a video's content and the channel. Although YouTube permits a maximum of 30 characters per tag, it's best to use tags that are 2-3 words or short phrases. Keep in mind that YouTube tags differ from hashtags, which appear in the video description and above the title.</p>
+                
+                <br />
+
+                <h4><b> Advantages of using this Extractor Tool </b></h4>
+                <p>Instead of spending time manually sifting through page source code to find channel and video tags, save time by using the tag extraction tool.<br />The YouTube tag extractor provides YouTubers with a powerful tool to enhance their video and channel SEO. By selecting the right keywords and tags, you can make your videos more discoverable and grow your audience. Keep in mind that the quality and content of your videos are equally important.</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loader">
+    <div class="spinner"></div>
+    <p style = "margin-left: 25px;">Please Wait, Your request is in progress.......</p>
+</div>
+
+<script>
+    function showLoader(event) {
+        let urlInput = document.getElementById('url_capture').value.trim();
+        
+        if (urlInput === "") {
+            event.preventDefault(); // Prevent form submission
+            alert("Please enter a valid YouTube channel URL.");
+            return false;
+        }
+
+        document.getElementById('loader').style.display = 'flex';
+    }
+</script>
+
+{% endblock %}

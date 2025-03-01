@@ -36,9 +36,6 @@ def monetize(request):
             id=channel_id
         ).execute()
 
-        if "items" not in response or not response["items"]:
-            return JsonResponse({"error": "Channel not found (invalid ID)"})
-
         channel = response["items"][0]
 
         channel_name = channel["snippet"]["title"]
@@ -137,3 +134,31 @@ def thumb_fetch(request):
         return render(request, "thumbnail.html", context)
     else:
         return render(request, "thumbnail.html")
+    
+def tag_extractor(request):
+    context = {}
+    channel_url = request.GET.get("url_capture")
+
+    if channel_url:
+        video_id = channel_url.split("=")[1]
+        mod_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id={video_id}&key={API_KEY}"
+        response = requests.get(mod_url)
+        data = response.json()
+
+        context["channel_name"] = data["items"][0]["snippet"]["channelTitle"]
+        context["video_name"] = data["items"][0]["snippet"]["title"]
+        context["video_description"] = data["items"][0]["snippet"]["description"]
+        context["channel_id"] = data["items"][0]["snippet"]["channelId"]
+        context["channel_url"] = channel_url
+
+        context["view_count"] = data["items"][0]["statistics"]["viewCount"]
+        context["like_count"] = data["items"][0]["statistics"]["likeCount"]
+        context["comment_count"] = data["items"][0]["statistics"]["commentCount"]
+        context["fav_count"] = data["items"][0]["statistics"]["favoriteCount"]
+        context["audio_language"] = data["items"][0]["snippet"]["defaultAudioLanguage"]
+        
+        context["tags"] = data["items"][0]["snippet"]["tags"]
+
+        return render(request, "tags_extractor.html", context)
+    else:
+        return render(request, "tags_extractor.html")
