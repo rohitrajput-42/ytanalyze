@@ -27,9 +27,6 @@ def monetize(request):
                 maxResults=1
             ).execute()
 
-            if not search_response.get("items"):
-                return JsonResponse({"error": "Channel not found (handle issue)"})
-
             channel_id = search_response["items"][0]["id"]["channelId"]
         else:
             channel_id = channel_url.split("/")[-1]
@@ -43,7 +40,7 @@ def monetize(request):
             return JsonResponse({"error": "Channel not found (invalid ID)"})
 
         channel = response["items"][0]
-        
+
         channel_name = channel["snippet"]["title"]
         avatar_url = channel["snippet"]["thumbnails"]["high"]["url"]
         description = channel["snippet"]["description"]
@@ -102,21 +99,17 @@ def channel_id(request):
     channel_url = request.GET.get("url_capture")
     
     if channel_url:
-        options = {
-            'quiet': True,
-            'extract_flat': True,
-            'playlistend': 1
-        }
-        with YoutubeDL(options) as ydl:
-            info = ydl.extract_info(channel_url, download=False)
-            channel_id = info["channel_id"]
+        
+        channel_handle = channel_url.split("@")[1]
+        mod_url = f"https://www.googleapis.com/youtube/v3/channels?part=snippet&forHandle={channel_handle}&key={API_KEY}"
 
-        avatar_url = info["thumbnails"][-1]["url"]
+        response = requests.get(mod_url)
+        info = response.json()
 
-        context["channel_name"] = info["channel"]
-        context["channel_avatar"] = avatar_url
+        context["channel_name"] = info["items"][0]["snippet"]["title"]
+        context["channel_avatar"] = info["items"][0]["snippet"]["thumbnails"]["high"]["url"]
         context["channel_url"] = channel_url
-        context["channel_id"] = channel_id
+        context["channel_id"] = info["items"][0]["id"]
         return render(request, "channel_id.html", context)
     else:
         return render(request, "channel_id.html")
@@ -127,34 +120,19 @@ def thumb_fetch(request):
     channel_url = request.GET.get("url_capture")
     
     if channel_url:
-        options = {
-            'quiet': True,
-            'extract_flat': True,
-            'cookies_from_browser': True,
-            'playlistend': 1
-        }
         
-        with YoutubeDL(options) as ydl:
-            info = ydl.extract_info(channel_url, download=False)
+        video_id = channel_url.split("=")[1]
+        mod_url = f"https://www.googleapis.com/youtube/v3/videos?id={video_id}&part=snippet&key={API_KEY}"
 
-            thumbnails = info.get("thumbnails", [])
-            unique_thumbnails = {thumbnail['url']: thumbnail for thumbnail in thumbnails}.values()
-            thumbnails_data = []
+        response = requests.get(mod_url)
+        data = response.json()
 
-            for thmb in unique_thumbnails:
-                thmb_dict = {}
-                if "resolution" in thmb and thmb["resolution"] in ["1920x1080", "686x386", "640x480"]:
-                    thmb_dict["url"] = thmb["url"]
-                    thmb_dict["width"] = thmb["width"]
-                    thmb_dict["height"] = thmb["height"]
-
-                    thumbnails_data.append(thmb_dict)    
-
-            context["channel_name"] = info.get("channel")
-            context["channel_avatar"] = thumbnails[-1]["url"] if thumbnails else None
-            context["channel_url"] = channel_url
-            context["channel_id"] = info.get("channel_id")
-            context["thumbnails"] = thumbnails_data
+        thumbnails = data["items"][0]["snippet"]["thumbnails"]
+        selected_keys = ["high", "standard", "maxres"]        
+        thumbnails_data = [{"url": thumbnails[key]["url"], "width": thumbnails[key]["width"], "height": thumbnails[key]["height"]} for key in selected_keys if key in thumbnails]
+        
+        context["channel_url"] = channel_url
+        context["thumbnails"] = thumbnails_data
         
         return render(request, "thumbnail.html", context)
     else:
