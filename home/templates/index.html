@@ -51,7 +51,7 @@
 
 <div class="container" style="text-align: center; margin-top: 50px;">
     <div class="row justify-content-center" id="cards_lim">
-        <div class="col-md-4 d-flex justify-content-center mb-4">
+        <div class="col-md-3 d-flex justify-content-center mb-4">
             <div class="card" style="width: 18rem;">
                 <a class="nav-link" href="{% url 'monetize' %}">
                     <div style="padding: 15px;">
@@ -64,7 +64,7 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-4 d-flex justify-content-center mb-4">
+        <div class="col-md-3 d-flex justify-content-center mb-4">
             <div class="card" style="width: 18rem;">
                 <a class="nav-link" href="{% url 'thumb_fetch' %}">
                     <div style="padding: 15px;">
@@ -77,7 +77,7 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-4 d-flex justify-content-center mb-4">
+        <div class="col-md-3 d-flex justify-content-center mb-4">
             <div class="card" style="width: 18rem;">
                 <a class="nav-link" href="{% url 'channel_id' %}">
                     <div style="padding: 15px;">
@@ -86,6 +86,19 @@
                     <div class="card-body">
                         <h5 class="card-title">Channel ID Finder</h5>
                         <p class="card-text">Quickly find your YouTube Channel ID with this easy-to-use tool. Whether you're a content creator or developer, simply enter the channel link to retrieve your unique Channel ID.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3 d-flex justify-content-center mb-4">
+            <div class="card" style="width: 18rem;">
+                <a class="nav-link" href="{% url 'tag_extractor' %}">
+                    <div style="padding: 15px;">
+                        <img src="{% static 'tags_gen.png' %}" style = "opacity: 70%;" class="card-img-top" alt="...">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">YouTube videos Tags Extractor</h5>
+                        <p class="card-text">The YouTube Tag Extractor is a useful tool that allows you to extract tags from any YouTube channel or video. It identifies and retrieves the keywords associated with the channel or video, preserving the exact order in which the creator has used them.</p>
                     </div>
                 </a>
             </div>
