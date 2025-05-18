@@ -118,6 +118,20 @@
         <div class = "col-sm-7 mt-5 mb-5">
             <div class="card shadow" style = "padding: 20px 20px 20px 30px;">
                 <ul type = "none" id = "channel_metadata">
+                    {% if tags == 'knull' %}
+                        <li>
+                            <h5><span style = "color: #ff0000;"><b> Tags : </b></span>  <b><span style = "color: #ff0000;">NO TAGS FOUND........</span></b></h5>
+                        </li><br />
+                    {% else %}
+                        <li>
+                            <div style = "display: flex;">
+                                <h5 id="tagsText"><span style = "color: #ff0000;"><b> Tags : </b></span>  <span style = "color: #0649a0;">{{ tags|join:", " }}</span></h5>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="copyTags()" title="Copy Tags" style = "float: right;">
+                                <i class="fa-solid fa-copy"></i> Copy Tags
+                            </button>
+                        </li><br />
+                    {% endif %}
                     <li>
                         <h5><b> Channel Name :  </b>  <a target = "_blank" href = "{{ channel_url }}" style = "color: black; text-decoration: none;" title = "View Channel"> {{ channel_name }} </a> </h5>
                     </li><br />
@@ -141,9 +155,6 @@
                     </li><br />
                     <li>
                         <h5><b> Video Audio Language : </b>  "{{ audio_language }}"</h5>
-                    </li><br />
-                    <li>
-                        <h5><b> Tags : </b>  <span style = "color: #0649a0;">{{ tags|join:", " }}</span></h5>
                     </li><br />
                     <li>
                         <h5><b> Video Description : </b>  {{ video_description }}</h5>
@@ -205,6 +216,30 @@
 
         document.getElementById('loader').style.display = 'flex';
     }
+
+    function copyTags() {
+        const tagsText = document.getElementById('tagsText').innerText;
+        navigator.clipboard.writeText(tagsText).then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Copied!',
+                text: 'Tags copied to clipboard.',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+        }).catch(err => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Failed to copy tags.',
+            });
+            console.error(err);
+        });
+    }
+
 </script>
 
 {% endblock %}

@@ -51,7 +51,7 @@
 
 <div class="container" style="text-align: center; margin-top: 50px;">
     <div class="row justify-content-center" id="cards_lim">
-        <div class="col-md-3 d-flex justify-content-center mb-4">
+        <div class="col-md-4 d-flex justify-content-center mb-4">
             <div class="card" style="width: 18rem;">
                 <a class="nav-link" href="{% url 'monetize' %}">
                     <div style="padding: 15px;">
@@ -64,33 +64,20 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-3 d-flex justify-content-center mb-4">
+        <div class="col-md-4 d-flex justify-content-center mb-4">
             <div class="card" style="width: 18rem;">
-                <a class="nav-link" href="{% url 'thumb_fetch' %}">
+                <a class="nav-link" href="{% url 'transcript' %}">
                     <div style="padding: 15px;">
-                        <img src="https://10015.io/assets/tools/list/youtube-thumbnail-grabber.svg" class="card-img-top" alt="...">
+                        <img src="{% static 'transcript_logo.png' %}" class="card-img-top" alt="...">
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Thumbnails Fetcher</h5>
-                        <p class="card-text">Easily retrieve high-quality YouTube video thumbnails with this simple tool. Just enter the video URL or ID, and get the perfect thumbnail image for your project, website, or social media. Fast, efficient, and hassle-free!.</p>
+                        <h5 class="card-title">YouTube videos Transcript Extractor</h5>
+                        <p class="card-text">YT-Analyze Transcript Extractor is a tool to extract subtitles in YouTube videos into text. Enter the YouTube URL and wait for the results with just one click.</p>
                     </div>
                 </a>
             </div>
         </div>
-        <div class="col-md-3 d-flex justify-content-center mb-4">
-            <div class="card" style="width: 18rem;">
-                <a class="nav-link" href="{% url 'channel_id' %}">
-                    <div style="padding: 15px;">
-                        <img src="{% static 'search_img.png' %}" class="card-img-top" alt="...">
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Channel ID Finder</h5>
-                        <p class="card-text">Quickly find your YouTube Channel ID with this easy-to-use tool. Whether you're a content creator or developer, simply enter the channel link to retrieve your unique Channel ID.</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-3 d-flex justify-content-center mb-4">
+        <div class="col-md-4 d-flex justify-content-center mb-4">
             <div class="card" style="width: 18rem;">
                 <a class="nav-link" href="{% url 'tag_extractor' %}">
                     <div style="padding: 15px;">
@@ -103,7 +90,34 @@
                 </a>
             </div>
         </div>
+        <div class="col-md-4 d-flex justify-content-center mb-4">
+            <div class="card" style="width: 18rem;">
+                <a class="nav-link" href="{% url 'thumb_fetch' %}">
+                    <div style="padding: 15px;">
+                        <img src="https://10015.io/assets/tools/list/youtube-thumbnail-grabber.svg" class="card-img-top" alt="...">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Thumbnails Fetcher</h5>
+                        <p class="card-text">Easily retrieve high-quality YouTube video thumbnails with this simple tool. Just enter the video URL or ID, and get the perfect thumbnail image for your project, website, or social media. Fast, efficient, and hassle-free!.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center mb-4">
+            <div class="card" style="width: 18rem;">
+                <a class="nav-link" href="{% url 'channel_id' %}">
+                    <div style="padding: 15px;">
+                        <img src="{% static 'search_img.png' %}" class="card-img-top" alt="...">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Channel ID Finder</h5>
+                        <p class="card-text">Quickly find your YouTube Channel ID with this easy-to-use tool. Whether you're a content creator or developer, simply enter the channel link to retrieve your unique Channel ID.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
+
 
 {% endblock %}

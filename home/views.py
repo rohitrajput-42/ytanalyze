@@ -5,6 +5,9 @@ from yt_dlp import YoutubeDL
 from django.conf import settings
 from googleapiclient.discovery import build
 import concurrent.futures
+from urllib.parse import urlparse, parse_qs
+import requests
+from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound, VideoUnavailable
 
 API_KEY = settings.YT_API_KEY
 youtube = build("youtube", "v3", developerKey=API_KEY)
@@ -18,6 +21,62 @@ def monetize(request):
     channel_url = request.GET.get("url_capture")
 
     if channel_url:
+        # --- Case 1: Video URL ---
+        if "watch?v=" in channel_url:
+            parsed_url = urlparse(channel_url)
+            query_params = parse_qs(parsed_url.query)
+            video_id = query_params.get("v", [None])[0]
+
+            if video_id:
+                video_details = youtube.videos().list(
+                    part="snippet,contentDetails,status,statistics",
+                    id=video_id
+                ).execute()
+
+                if not video_details["items"]:
+                    context["error"] = "Invalid video URL"
+                    return render(request, "monetize.html", context)
+
+                video = video_details["items"][0]
+                snippet = video["snippet"]
+                status = video["status"]
+                content_details = video["contentDetails"]
+                statistics = video["statistics"]
+                channel_id = snippet["channelId"]
+
+                # Optional: fetch channel data for avatar, country, subscriber count
+                channel_response = youtube.channels().list(
+                    part="snippet,statistics",
+                    id=channel_id
+                ).execute()
+                channel = channel_response["items"][0]
+                avatar_url = channel["snippet"]["thumbnails"]["high"]["url"]
+                subscribers = int(channel["statistics"].get("subscriberCount", 0))
+                country = channel["snippet"].get("country", "Not Available")
+
+                monetized = (
+                    content_details.get("licensedContent", False) and
+                    not status.get("madeForKids", False) and
+                    status.get("uploadStatus") == "processed"
+                )
+
+                context.update({
+                    "channel_name": snippet["channelTitle"],
+                    "avatar_url": avatar_url,
+                    "description": snippet.get("description", ""),
+                    "country": country,
+                    "creation_date": snippet["publishedAt"].split("T")[0],
+                    "subscribers": subscribers,
+                    "total_videos": "N/A",
+                    "total_views": statistics.get("viewCount", 0),
+                    "estimated_earnings": round(int(statistics.get("viewCount", 0)) * 3.00 / 1000, 2),
+                    "monetization_status": monetized,
+                    "video_url": f"https://www.youtube.com/watch?v={video_id}"
+                })
+
+                return render(request, "monetize.html", context)
+
+        # --- Case 2: Channel URL ---
         if "/@" in channel_url:
             username = channel_url.split("/@")[-1]
             search_response = youtube.search().list(
@@ -27,6 +86,10 @@ def monetize(request):
                 maxResults=1
             ).execute()
 
+            if not search_response["items"]:
+                context["error"] = "Channel not found"
+                return render(request, "monetize.html", context)
+
             channel_id = search_response["items"][0]["id"]["channelId"]
         else:
             channel_id = channel_url.split("/")[-1]
@@ -35,6 +98,10 @@ def monetize(request):
             part="snippet,statistics,contentDetails,status",
             id=channel_id
         ).execute()
+
+        if not response["items"]:
+            context["error"] = "Channel not found"
+            return render(request, "monetize.html", context)
 
         channel = response["items"][0]
 
@@ -47,7 +114,7 @@ def monetize(request):
         total_videos = int(channel["statistics"].get("videoCount", 0))
         total_views = int(channel["statistics"].get("viewCount", 0))
 
-        avg_rpm = 3.00  
+        avg_rpm = 3.00
         estimated_earnings = round((total_views * avg_rpm) / 1000, 2)
 
         video_response = youtube.search().list(
@@ -58,7 +125,7 @@ def monetize(request):
         ).execute()
 
         video_ids = [item["id"]["videoId"] for item in video_response.get("items", []) if item["id"]["kind"] == "youtube#video"]
-        
+
         monetized = False
         if video_ids:
             video_details = youtube.videos().list(
@@ -157,8 +224,56 @@ def tag_extractor(request):
         context["fav_count"] = data["items"][0]["statistics"]["favoriteCount"]
         context["audio_language"] = data["items"][0]["snippet"]["defaultAudioLanguage"]
         
-        context["tags"] = data["items"][0]["snippet"]["tags"]
+        try:
+            context["tags"] = data["items"][0]["snippet"]["tags"]
+        except:
+            context["tags"] = "knull"
 
         return render(request, "tags_extractor.html", context)
     else:
         return render(request, "tags_extractor.html")
+    
+def aboutus(request):
+    return render(request, "aboutus.html")
+
+def extract_video_id(url):
+    # Simple function to extract video ID from URL (adjust if needed)
+    import re
+    regex = r"(?:v=|\/)([0-9A-Za-z_-]{11}).*"
+    match = re.search(regex, url)
+    return match.group(1) if match else None
+
+def transcript(request):
+    context = {}
+    channel_url = request.GET.get("url_capture")
+
+    if channel_url:
+        video_id = extract_video_id(channel_url)
+        if video_id:
+            try:
+                transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+                trans_data = []
+                for xert in transcript_list:
+                    trans_data.append(xert["text"])
+
+                context["channel_url"] = channel_url
+                context['transcript'] = trans_data
+                context['transcript_status'] = "ok"
+            except TranscriptsDisabled:
+                context['transcript'] = "Transcript is disabled for this video."
+                context["channel_url"] = channel_url
+                context['transcript_status'] = "knull"
+            except NoTranscriptFound:
+                context['transcript'] = "No transcript found for this video."
+                context["channel_url"] = channel_url
+                context['transcript_status'] = "knull"
+            except VideoUnavailable:
+                context['transcript'] = "Video is unavailable."
+                context["channel_url"] = channel_url
+                context['transcript_status'] = "knull"
+            except Exception as e:
+                context['transcript'] = f"An error occurred: {str(e)}"
+                context["channel_url"] = channel_url
+                context['transcript_status'] = "knull"
+
+    return render(request, "transcript.html", context)
