@@ -9,6 +9,7 @@ from urllib.parse import urlparse, parse_qs
 import requests
 import re
 import json
+import html
 
 API_KEY = settings.YT_API_KEY
 youtube = build("youtube", "v3", developerKey=API_KEY)
@@ -260,12 +261,15 @@ def transcript(request):
             result = response.json()
 
             capt_list = []
-            for capt in result["transcript"]:
+            for capt in result.get("transcript", []):
                 try:
-                    capt_list.append(capt["text"])
-                except:
+                    text = capt["text"]
+                    # Decode HTML entities here
+                    decoded_text = html.unescape(text)
+                    capt_list.append(decoded_text)
+                except Exception:
                     pass
-                
+
             if result["success"] == True:
                 context["transcript"] = capt_list
                 context["transcript_status"] = "ok"
