@@ -21,6 +21,7 @@ ALLOWED_HOSTS = ['*']
 MONETIZE_RUNTIME = os.environ.get('MONETIZE_RUNTIME')
 
 YT_API_KEY = os.environ.get('YT_API_KEY')
+RECAPTCHA_SECRET_KEY = '6LehMEArAAAAABFNg_Rjj2VnUZXZ7jk95mc3TuTu'
 
 # Application definition
 INSTALLED_APPS = [
