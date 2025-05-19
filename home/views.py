@@ -7,7 +7,8 @@ from googleapiclient.discovery import build
 import concurrent.futures
 from urllib.parse import urlparse, parse_qs
 import requests
-from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound, VideoUnavailable
+import re
+import json
 
 API_KEY = settings.YT_API_KEY
 youtube = build("youtube", "v3", developerKey=API_KEY)
@@ -237,11 +238,43 @@ def aboutus(request):
     return render(request, "aboutus.html")
 
 def extract_video_id(url):
-    # Simple function to extract video ID from URL (adjust if needed)
-    import re
     regex = r"(?:v=|\/)([0-9A-Za-z_-]{11}).*"
     match = re.search(regex, url)
     return match.group(1) if match else None
+
+def get_transcript_yt_dlp(video_id):
+    try:
+        ydl_opts = {
+            'skip_download': True,
+            'writesubtitles': True,
+            'writeautomaticsub': True,
+            'quiet': True,
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
+            subtitles = info.get('subtitles', {})
+            auto_subs = info.get('automatic_captions', {})
+
+            available_subs = subtitles or auto_subs
+            if not available_subs:
+                return {"status": "error", "message": "No subtitles or auto captions found."}
+
+            preferred_lang = 'en'
+            if preferred_lang in available_subs:
+                sub_url = available_subs[preferred_lang][0]['url']
+            else:
+                first_lang = list(available_subs.keys())[0]
+                sub_url = available_subs[first_lang][0]['url']
+
+            # Download the subtitle file
+            response = requests.get(sub_url)
+            if response.status_code != 200:
+                return {"status": "error", "message": "Failed to download subtitles."}
+
+            return {"status": "ok", "transcript": response.text}
+
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 def transcript(request):
     context = {}
@@ -250,30 +283,19 @@ def transcript(request):
     if channel_url:
         video_id = extract_video_id(channel_url)
         if video_id:
-            try:
-                transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-                trans_data = []
-                for xert in transcript_list:
-                    trans_data.append(xert["text"])
+            result = get_transcript_yt_dlp(video_id)
+            mark_res = json.loads(result["transcript"])
 
-                context["channel_url"] = channel_url
-                context['transcript'] = trans_data
-                context['transcript_status'] = "ok"
-            except TranscriptsDisabled:
-                context['transcript'] = "Transcript is disabled for this video."
-                context["channel_url"] = channel_url
-                context['transcript_status'] = "knull"
-            except NoTranscriptFound:
-                context['transcript'] = "No transcript found for this video."
-                context["channel_url"] = channel_url
-                context['transcript_status'] = "knull"
-            except VideoUnavailable:
-                context['transcript'] = "Video is unavailable."
-                context["channel_url"] = channel_url
-                context['transcript_status'] = "knull"
-            except Exception as e:
-                context['transcript'] = f"An error occurred: {str(e)}"
-                context["channel_url"] = channel_url
-                context['transcript_status'] = "knull"
+            capt_list = []
+            for capt in mark_res["events"]:
+                capt_list.append(capt["segs"][0]["utf8"])
+
+            if result["status"] == "ok":
+                context["transcript"] = capt_list
+                context["transcript_status"] = "ok"
+            else:
+                context["transcript"] = result["message"]
+                context["transcript_status"] = "knull"
+            context["channel_url"] = channel_url
 
     return render(request, "transcript.html", context)
