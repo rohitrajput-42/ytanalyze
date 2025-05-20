@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Terms of Service{% endblock %}
+{% block main_content %}
+
+<style>
+    #terms_container {
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.8;
+        font-size: 16px;
+        color: #333;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #terms_container h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        color: rgb(42, 113, 255);
+    }
+
+    #terms_container h2 {
+        font-size: 24px;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        color: rgb(107, 159, 255);
+    }
+
+    #terms_container p {
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        #terms_container {
+            padding-top: 100px;
+        }
+
+        #terms_container h1 {
+            font-size: 28px;
+        }
+
+        #terms_container h2 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class = "py-5" id="terms_container">
+    <h1>Terms of Service</h1>
+    <p>Welcome to <strong>YT Analyze</strong> (<a href="https://ytanalyze.com">ytanalyze.com</a>). By accessing or using our website and tools, you agree to comply with and be bound by the following Terms of Service. If you do not agree with these terms, please do not use our website.</p>
+
+    <h2>1. Use of Our Services</h2>
+    <p>YT Analyze provides tools such as Monetization Checker, Transcript Extractor, Tags Generator, Thumbnail Downloader, and Channel ID Finder for informational and research purposes only.</p>
+    <p>Users agree to use these tools in compliance with applicable laws and YouTube’s terms and policies.</p>
+
+    <h2>2. User Conduct</h2>
+    <p>You agree not to misuse our services, including but not limited to:</p>
+    <ul>
+        <li>Automated data scraping or bulk downloading</li>
+        <li>Attempting to access restricted parts of our infrastructure</li>
+        <li>Reverse engineering, reselling, or copying our platform</li>
+    </ul>
+
+    <h2>3. Intellectual Property</h2>
+    <p>All content, design, code, and branding on YT Analyze is owned by us or licensed to us. You may not reproduce or redistribute any part of the platform without permission.</p>
+
+    <h2>4. Disclaimer</h2>
+    <p>YT Analyze is not affiliated with or endorsed by YouTube or Google. The data provided by our tools is for informational purposes only and should not be considered 100% accurate or official.</p>
+
+    <h2>5. Limitation of Liability</h2>
+    <p>We do our best to ensure accurate results, but we are not liable for any errors, delays, or decisions made based on our tools. Use our services at your own risk.</p>
+
+    <h2>6. Modifications to the Service</h2>
+    <p>We reserve the right to update, modify, or discontinue any feature of YT Analyze at any time without prior notice.</p>
+
+    <h2>7. Termination</h2>
+    <p>We may suspend or terminate access to YT Analyze for any user who violates these terms or uses the service in a harmful manner.</p>
+
+    <h2>8. Governing Law</h2>
+    <p>These terms are governed by and construed in accordance with the laws of [Your Country/Region], without regard to its conflict of law provisions.</p>
+
+    <h2>9. Contact</h2>
+    <p>If you have any questions about these Terms of Service, please reach out through our <b><a href="{% url 'contact_us' %}">Contact Us</a></b> page.</p>
+</div>
+
+{% endblock %}

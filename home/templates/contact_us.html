@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Contact Us {% endblock %}
+{% block main_content %}
+
+<style>
+    #contain_ment {
+        padding-top: 150px; 
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .contact-info {
+        max-width: 40%;
+        flex: 1;
+    }
+
+    .contact-info h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+    }
+
+    .contact-info p {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .contact-info div {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+    .contact-info div i {
+        color: rgb(42, 113, 255);
+        margin-right: 10px;
+    }
+
+    form {
+        max-width: 55%;
+        flex: 1;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 15px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+    }
+
+    .form-row input {
+        width: 100%;
+    }
+
+    button {
+        background-color: rgb(42, 113, 255);;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: rgb(107, 159, 255);;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        #contain_ment {
+            flex-direction: column;
+            padding: 80px 20px 50px 20px;
+        }
+
+        .contact-info,
+        form {
+            max-width: 100%;
+        }
+
+        .form-row {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="container" id="contain_ment">
+    <div class="contact-info">
+        <h1>Contact Us</h1>
+        <p>Feel free to drop us a message.</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <input type="text" name="first_name" placeholder="First" required>
+            <input type="text" name="last_name" placeholder="Last">
+        </div>
+        <input type="email" name="email" placeholder="example@email.com" required>
+        <input type="text" name="phone" placeholder="xxx-xxx-xxxx">
+        <textarea name="message" rows="5" placeholder="Type your message ..." required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+
+{% if mail_status %}
+<script>
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Mail sent successfully, we will contact you shortly.',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+    });
+</script>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Privacy Policy{% endblock %}
+{% block main_content %}
+
+<style>
+    #policy_container {
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.8;
+        font-size: 16px;
+        color: #333;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #policy_container h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        color: rgb(42, 113, 255);
+    }
+
+    #policy_container h2 {
+        font-size: 24px;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        color: rgb(107, 159, 255);
+    }
+
+    #policy_container p {
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        #policy_container {
+            padding-top: 100px;
+        }
+
+        #policy_container h1 {
+            font-size: 28px;
+        }
+
+        #policy_container h2 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class = "py-5" id="policy_container">
+    <h1>Privacy Policy</h1>
+    <p>At <strong>YT Analyze</strong> (<a href="https://ytanalyze.com">ytanalyze.com</a>), we respect your privacy and are committed to protecting the personal information you share with us. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our website and its tools.</p>
+
+    <h2>1. Information We Collect</h2>
+    <p>We may collect non-personally identifiable data such as browser type, device type, IP address, and referral source for analytics and performance purposes.</p>
+    <p>We do not collect personally identifiable information unless you voluntarily provide it through forms (e.g., contact form).</p>
+
+    <h2>2. How We Use Your Information</h2>
+    <p>We use collected information to:</p>
+    <ul>
+        <li>Improve the performance and user experience of YT Analyze</li>
+        <li>Analyze tool usage (such as Monetization Checker, Transcript Extractor, Tags Generator, etc.)</li>
+        <li>Respond to inquiries or support requests</li>
+    </ul>
+
+    <h2>3. Cookies</h2>
+    <p>YT Analyze may use cookies to enhance your browsing experience. You can disable cookies through your browser settings if you prefer.</p>
+
+    <h2>4. Data Sharing</h2>
+    <p>We do not sell, trade, or transfer your information to third parties. We may share limited technical data with trusted analytics providers like Google Analytics solely for improving site performance.</p>
+
+    <h2>5. External Links</h2>
+    <p>Our website may contain links to third-party sites (e.g., YouTube). We are not responsible for the privacy practices of these websites.</p>
+
+    <h2>6. Security</h2>
+    <p>We take reasonable measures to secure the information collected, though no internet transmission is 100% secure.</p>
+
+    <h2>7. Children's Privacy</h2>
+    <p>YT Analyze does not knowingly collect or solicit information from individuals under 13 years of age.</p>
+
+    <h2>8. Changes to This Policy</h2>
+    <p>We may update this policy periodically. Updates will be posted on this page with a revised "Effective Date."</p>
+
+    <h2>9. Contact Us</h2>
+    <p>If you have any questions about this Privacy Policy, please contact us via our <b><a href="{% url 'contact_us' %}">Contact Us</a> </b>page.</p>
+
+</div>
+
+{% endblock %}

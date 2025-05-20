@@ -21,7 +21,6 @@ ALLOWED_HOSTS = ['*']
 MONETIZE_RUNTIME = os.environ.get('MONETIZE_RUNTIME')
 
 YT_API_KEY = os.environ.get('YT_API_KEY')
-RECAPTCHA_SECRET_KEY = '6LehMEArAAAAABFNg_Rjj2VnUZXZ7jk95mc3TuTu'
 
 # Application definition
 INSTALLED_APPS = [
@@ -111,3 +110,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'rohit1471997@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('pasem_script')

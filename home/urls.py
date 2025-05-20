@@ -7,9 +7,11 @@ urlpatterns = [
     path("channel_id/", channel_id, name="channel_id"),
     path("thumb_fetch/", thumb_fetch, name="thumb_fetch"),
     path("tag_extractor/", tag_extractor, name="tag_extractor"),
-
     path("transcript/", transcript, name="transcript"),
+    path("aboutus/", aboutus, name="aboutus"),
+    path("contact_us/", contact_us, name="contact_us"),
 
-
-    path("aboutus/", aboutus, name="aboutus")
+    path("disclaimer/", disclaimer, name="disclaimer"),
+    path("privacy/", privacy, name="privacy"),
+    path("tnc/", tnc, name="tnc"),
 ]

@@ -11,7 +11,6 @@
     <link rel="icon" href="{% static 'yt_ico.ico' %}" type="image/x-icon">
     <link href='https://fonts.googleapis.com/css?family=JetBrains Mono' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LehMEArAAAAAPxFb1geuR6w1wM1Yk1OCTlzRy8L"></script>
     <style>
         /* General Styling */
         body {
@@ -133,13 +132,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto" id = "_nav_links">
                     <li class="nav-item">
-                        <a class="nav-link" href="/"> <i class="fas fa-home" style = "color: #fd3334"></i> Home</a>
+                        <a class="nav-link" href="/"> <i class="fas fa-home" style = "color: rgb(42, 113, 255);"></i> Home</a>
                     </li>&ensp;&ensp;&ensp;
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'monetize' %}"> <i class="fas fa-dollar-sign" style = "color: #0f9d58"></i> MonetizationChecker</a>
                     </li>&ensp;&ensp;
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'aboutus' %}"> <i class="far fa-address-book"></i> AboutUs/Contact </a>
+                        <a class="nav-link" href="{% url 'aboutus' %}"> <i class="far fa-address-book"></i> About Us </a>
+                    </li>&ensp;&ensp;
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact_us' %}"> <i class="fa-solid fa-headset"></i> Contact Us </a>
                     </li>&ensp;&ensp;
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -174,7 +176,7 @@
         <div class="container">
             <p>&copy; 2025 YT-Analyze. All rights reserved.</p>
             <p id = "_footer_links">
-                <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+                <a href="{% url 'privacy' %}">Privacy Policy</a> | <a href="{% url 'tnc' %}">Terms of Service</a> | <a href="{% url 'disclaimer' %}">Disclaimer</a>
             </p>
         </div>
     </footer>

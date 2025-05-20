@@ -1,9 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import requests
 import yt_dlp
 from yt_dlp import YoutubeDL
 from django.conf import settings
-from django.http import HttpResponseBadRequest
 from googleapiclient.discovery import build
 import concurrent.futures
 from urllib.parse import urlparse, parse_qs
@@ -11,176 +10,155 @@ import requests
 import re
 import json
 import html
-from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 API_KEY = settings.YT_API_KEY
 youtube = build("youtube", "v3", developerKey=API_KEY)
 
-
-def verify_captcha(token):
-    """Verify reCAPTCHA v3 token with Google."""
-    data = {
-        'secret': settings.RECAPTCHA_SECRET_KEY,
-        'response': token
-    }
-    response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-    return response.json()
-
 def home(request):
     return render(request, "index.html")
 
-@csrf_exempt
 def monetize(request):
     context = {}
 
-    if request.method == "GET":
-        channel_url = request.GET.get("url_capture")
-        captcha_token = request.GET.get("captcha_token")
+    channel_url = request.GET.get("url_capture")
 
-        if not captcha_token:
-            context["error"] = "CAPTCHA verification failed. Please try again."
-            return render(request, "monetize.html", context)
+    if channel_url:
+        # --- Case 1: Video URL ---
+        if "watch?v=" in channel_url:
+            parsed_url = urlparse(channel_url)
+            query_params = parse_qs(parsed_url.query)
+            video_id = query_params.get("v", [None])[0]
 
-        captcha_result = verify_captcha(captcha_token)
-        if not captcha_result.get("success") or captcha_result.get("score", 0) < 0.5:
-            context["error"] = "Bot-like activity detected. CAPTCHA failed."
-            return render(request, "monetize.html", context)
-
-        if channel_url:
-            # --- Case 1: Video URL ---
-            if "watch?v=" in channel_url:
-                parsed_url = urlparse(channel_url)
-                query_params = parse_qs(parsed_url.query)
-                video_id = query_params.get("v", [None])[0]
-
-                if video_id:
-                    video_details = youtube.videos().list(
-                        part="snippet,contentDetails,status,statistics",
-                        id=video_id
-                    ).execute()
-
-                    if not video_details["items"]:
-                        context["error"] = "Invalid video URL"
-                        return render(request, "monetize.html", context)
-
-                    video = video_details["items"][0]
-                    snippet = video["snippet"]
-                    status = video["status"]
-                    content_details = video["contentDetails"]
-                    statistics = video["statistics"]
-                    channel_id = snippet["channelId"]
-
-                    channel_response = youtube.channels().list(
-                        part="snippet,statistics",
-                        id=channel_id
-                    ).execute()
-                    channel = channel_response["items"][0]
-                    avatar_url = channel["snippet"]["thumbnails"]["high"]["url"]
-                    subscribers = int(channel["statistics"].get("subscriberCount", 0))
-                    country = channel["snippet"].get("country", "Not Available")
-
-                    monetized = (
-                        content_details.get("licensedContent", False) and
-                        not status.get("madeForKids", False) and
-                        status.get("uploadStatus") == "processed"
-                    )
-
-                    context.update({
-                        "channel_name": snippet["channelTitle"],
-                        "avatar_url": avatar_url,
-                        "description": snippet.get("description", ""),
-                        "country": country,
-                        "creation_date": snippet["publishedAt"].split("T")[0],
-                        "subscribers": subscribers,
-                        "total_videos": "N/A",
-                        "total_views": statistics.get("viewCount", 0),
-                        "estimated_earnings": round(int(statistics.get("viewCount", 0)) * 3.00 / 1000, 2),
-                        "monetization_status": monetized,
-                        "video_url": f"https://www.youtube.com/watch?v={video_id}"
-                    })
-
-                    return render(request, "monetize.html", context)
-
-            # --- Case 2: Channel URL ---
-            if "/@" in channel_url:
-                username = channel_url.split("/@")[-1]
-                search_response = youtube.search().list(
-                    part="snippet",
-                    q=username,
-                    type="channel",
-                    maxResults=1
+            if video_id:
+                video_details = youtube.videos().list(
+                    part="snippet,contentDetails,status,statistics",
+                    id=video_id
                 ).execute()
 
-                if not search_response["items"]:
-                    context["error"] = "Channel not found"
+                if not video_details["items"]:
+                    context["error"] = "Invalid video URL"
                     return render(request, "monetize.html", context)
 
-                channel_id = search_response["items"][0]["id"]["channelId"]
-            else:
-                channel_id = channel_url.split("/")[-1]
+                video = video_details["items"][0]
+                snippet = video["snippet"]
+                status = video["status"]
+                content_details = video["contentDetails"]
+                statistics = video["statistics"]
+                channel_id = snippet["channelId"]
 
-            response = youtube.channels().list(
-                part="snippet,statistics,contentDetails,status",
-                id=channel_id
+                # Optional: fetch channel data for avatar, country, subscriber count
+                channel_response = youtube.channels().list(
+                    part="snippet,statistics",
+                    id=channel_id
+                ).execute()
+                channel = channel_response["items"][0]
+                avatar_url = channel["snippet"]["thumbnails"]["high"]["url"]
+                subscribers = int(channel["statistics"].get("subscriberCount", 0))
+                country = channel["snippet"].get("country", "Not Available")
+
+                monetized = (
+                    content_details.get("licensedContent", False) and
+                    not status.get("madeForKids", False) and
+                    status.get("uploadStatus") == "processed"
+                )
+
+                context.update({
+                    "channel_name": snippet["channelTitle"],
+                    "avatar_url": avatar_url,
+                    "description": snippet.get("description", ""),
+                    "country": country,
+                    "creation_date": snippet["publishedAt"].split("T")[0],
+                    "subscribers": subscribers,
+                    "total_videos": "N/A",
+                    "total_views": statistics.get("viewCount", 0),
+                    "estimated_earnings": round(int(statistics.get("viewCount", 0)) * 3.00 / 1000, 2),
+                    "monetization_status": monetized,
+                    "video_url": f"https://www.youtube.com/watch?v={video_id}"
+                })
+
+                return render(request, "monetize.html", context)
+
+        # --- Case 2: Channel URL ---
+        if "/@" in channel_url:
+            username = channel_url.split("/@")[-1]
+            search_response = youtube.search().list(
+                part="snippet",
+                q=username,
+                type="channel",
+                maxResults=1
             ).execute()
 
-            if not response["items"]:
+            if not search_response["items"]:
                 context["error"] = "Channel not found"
                 return render(request, "monetize.html", context)
 
-            channel = response["items"][0]
+            channel_id = search_response["items"][0]["id"]["channelId"]
+        else:
+            channel_id = channel_url.split("/")[-1]
 
-            channel_name = channel["snippet"]["title"]
-            avatar_url = channel["snippet"]["thumbnails"]["high"]["url"]
-            description = channel["snippet"]["description"]
-            country = channel["snippet"].get("country", "Not Available")
-            creation_date = channel["snippet"]["publishedAt"]
-            subscribers = int(channel["statistics"].get("subscriberCount", 0))
-            total_videos = int(channel["statistics"].get("videoCount", 0))
-            total_views = int(channel["statistics"].get("viewCount", 0))
+        response = youtube.channels().list(
+            part="snippet,statistics,contentDetails,status",
+            id=channel_id
+        ).execute()
 
-            avg_rpm = 3.00
-            estimated_earnings = round((total_views * avg_rpm) / 1000, 2)
-
-            video_response = youtube.search().list(
-                part="id",
-                channelId=channel_id,
-                maxResults=10,
-                order="date"
-            ).execute()
-
-            video_ids = [item["id"]["videoId"] for item in video_response.get("items", []) if item["id"]["kind"] == "youtube#video"]
-
-            monetized = False
-            if video_ids:
-                video_details = youtube.videos().list(
-                    part="contentDetails,status",
-                    id=",".join(video_ids)
-                ).execute()
-
-                monetized = any(
-                    video["contentDetails"].get("licensedContent", False) and 
-                    not video["status"].get("madeForKids", False)
-                    for video in video_details.get("items", [])
-                )
-
-            context.update({
-                "channel_name": channel_name,
-                "avatar_url": avatar_url,
-                "description": description,
-                "country": country,
-                "creation_date": creation_date.split("T")[0],
-                "subscribers": subscribers,
-                "total_videos": total_videos,
-                "total_views": total_views,
-                "estimated_earnings": estimated_earnings,
-                "monetization_status": monetized,
-                "video_url": channel_url
-            })
-
+        if not response["items"]:
+            context["error"] = "Channel not found"
             return render(request, "monetize.html", context)
 
-    return render(request, "monetize.html", context)
+        channel = response["items"][0]
+
+        channel_name = channel["snippet"]["title"]
+        avatar_url = channel["snippet"]["thumbnails"]["high"]["url"]
+        description = channel["snippet"]["description"]
+        country = channel["snippet"].get("country", "Not Available")
+        creation_date = channel["snippet"]["publishedAt"]
+        subscribers = int(channel["statistics"].get("subscriberCount", 0))
+        total_videos = int(channel["statistics"].get("videoCount", 0))
+        total_views = int(channel["statistics"].get("viewCount", 0))
+
+        avg_rpm = 3.00
+        estimated_earnings = round((total_views * avg_rpm) / 1000, 2)
+
+        video_response = youtube.search().list(
+            part="id",
+            channelId=channel_id,
+            maxResults=10,
+            order="date"
+        ).execute()
+
+        video_ids = [item["id"]["videoId"] for item in video_response.get("items", []) if item["id"]["kind"] == "youtube#video"]
+
+        monetized = False
+        if video_ids:
+            video_details = youtube.videos().list(
+                part="contentDetails,status",
+                id=",".join(video_ids)
+            ).execute()
+
+            monetized = any(
+                video["contentDetails"].get("licensedContent", False) and 
+                not video["status"].get("madeForKids", False)
+                for video in video_details.get("items", [])
+            )
+
+        context.update({
+            "channel_name": channel_name,
+            "avatar_url": avatar_url,
+            "description": description,
+            "country": country,
+            "creation_date": creation_date.split("T")[0],
+            "subscribers": subscribers,
+            "total_videos": total_videos,
+            "total_views": total_views,
+            "estimated_earnings": estimated_earnings,
+            "monetization_status": monetized,
+            "video_url": channel_url
+        })
+
+        return render(request, "monetize.html", context)
+
+    return render(request, "monetize.html")
 
 def channel_id(request):
     context = {}
@@ -243,11 +221,30 @@ def tag_extractor(request):
         context["channel_id"] = data["items"][0]["snippet"]["channelId"]
         context["channel_url"] = channel_url
 
-        context["view_count"] = data["items"][0]["statistics"]["viewCount"]
-        context["like_count"] = data["items"][0]["statistics"]["likeCount"]
-        context["comment_count"] = data["items"][0]["statistics"]["commentCount"]
-        context["fav_count"] = data["items"][0]["statistics"]["favoriteCount"]
-        context["audio_language"] = data["items"][0]["snippet"]["defaultAudioLanguage"]
+        try:
+            context["view_count"] = data["items"][0]["statistics"]["viewCount"]
+        except:
+            context["view_count"] = "N/A"
+        
+        try:
+            context["like_count"] = data["items"][0]["statistics"]["likeCount"]
+        except:
+            context["like_count"] = "N/A"
+
+        try:
+            context["comment_count"] = data["items"][0]["statistics"]["commentCount"]
+        except:
+            context["comment_count"] = "N/A"
+            
+        try:
+            context["fav_count"] = data["items"][0]["statistics"]["favoriteCount"]
+        except:
+            context["fav_count"] = "N/A"
+
+        try:
+            context["audio_language"] = data["items"][0]["snippet"]["defaultAudioLanguage"]
+        except:
+            context["audio_language"] = "N/A"
         
         try:
             context["tags"] = data["items"][0]["snippet"]["tags"]
@@ -260,6 +257,50 @@ def tag_extractor(request):
     
 def aboutus(request):
     return render(request, "aboutus.html")
+
+def contact_us(request):
+    if request.method == 'POST':
+        first = request.POST.get('first_name')
+        try:
+            last = request.POST.get('last_name')
+        except:
+            last = ""
+        email = request.POST.get('email')
+        try:
+            phone = request.POST.get('phone')
+        except:
+            phone = ""
+        message = request.POST.get('message')
+
+        full_message = f"""
+        Name: {first} {last}
+        Email: {email}
+        Phone: {phone}
+        Message: VIA YT-Analyze .....
+        {message}
+        """
+
+        send_mail(
+            subject=f"Contact Form Submission from {first} {last}",
+            message=full_message,
+            from_email="rohit1471997@gmail.com",
+            recipient_list=['rohit1471997@gmail.com'],
+        )
+
+        return redirect('/contact_us?success=1')
+
+    mail_status = "pass" if request.GET.get('success') == '1' else None
+    return render(request, 'contact_us.html', {"mail_status": mail_status})
+
+def disclaimer(request):
+    return render(request, "disclaimer.html")
+
+def privacy(request):
+    return render(request, "privacy.html")
+
+def tnc(request):
+    return render(request, "tnc.html")
+
 
 def extract_video_id(url):
     regex = r"(?:v=|\/)([0-9A-Za-z_-]{11}).*"

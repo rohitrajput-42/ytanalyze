@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Disclaimer{% endblock %}
+{% block main_content %}
+
+<style>
+    #disclaimer_container {
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.8;
+        font-size: 16px;
+        color: #333;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #disclaimer_container h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        color: rgb(42, 113, 255);
+    }
+
+    #disclaimer_container h2 {
+        font-size: 24px;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        color: rgb(107, 159, 255);
+    }
+
+    #disclaimer_container p {
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        #disclaimer_container {
+            padding-top: 100px;
+        }
+
+        #disclaimer_container h1 {
+            font-size: 28px;
+        }
+
+        #disclaimer_container h2 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class = "py-5" id="disclaimer_container">
+    <h1>Disclaimer</h1>
+    <p>This website, <strong>YT Analyze</strong> (<a href="https://ytanalyze.com">ytanalyze.com</a>), is provided for general informational and educational purposes only. All information and tools offered on this site are used at your own risk.</p>
+
+    <h2>1. Not Affiliated with YouTube</h2>
+    <p>YT Analyze is an independent platform and is not affiliated with, endorsed by, or connected to YouTube, Google, or any of their subsidiaries. All YouTube-related data or branding remains the property of its respective owners.</p>
+
+    <h2>2. Tool Accuracy</h2>
+    <p>We strive to ensure that tools like the Monetization Checker, Transcript Extractor, Tags Generator, Thumbnail Downloader, and Channel ID Finder provide accurate and updated information. However, we do not guarantee the completeness, reliability, or accuracy of the results.</p>
+
+    <h2>3. No Professional Advice</h2>
+    <p>The content and tools provided do not constitute legal, financial, or professional advice. You should consult appropriate professionals for advice tailored to your situation.</p>
+
+    <h2>4. Limitation of Liability</h2>
+    <p>YT Analyze and its team will not be held liable for any loss or damage, direct or indirect, arising from the use of this website, its tools, or information. Use of this site is entirely at your own risk.</p>
+
+    <h2>5. External Links</h2>
+    <p>Our site may contain links to third-party websites. We do not control and are not responsible for the content, policies, or practices of any external websites.</p>
+
+    <h2>6. Updates</h2>
+    <p>This disclaimer may be updated from time to time. Any changes will be posted on this page with a revised effective date.</p>
+
+    <h2>7. Contact Us</h2>
+    <p>If you have any questions about this disclaimer, please contact us through our <b><a href="{% url 'contact_us' %}">Contact Us</a></b> page.</p>
+</div>
+
+{% endblock %}

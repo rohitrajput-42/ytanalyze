@@ -92,27 +92,12 @@
 
 </style>
 
-<script>
-    function onSubmit(token) {
-        document.getElementById("your-form-id").submit();
-    }
-
-    function prepareCaptcha() {
-        grecaptcha.ready(function () {
-            grecaptcha.execute('6LehMEArAAAAAPxFb1geuR6w1wM1Yk1OCTlzRy8L', { action: 'submit' }).then(function (token) {
-                document.getElementById('id_captcha_token').value = token;
-                document.getElementById("your-form-id").submit();
-            });
-        });
-    }
-</script>
-
 <section class="hero">
     <div class="container">
         <h1> <img src = "{% static 'dollar_img.png' %}" style = "width: 65px; margin-top: -10px;"> YouTube Monetization Checker</h1>
         <p class="lead">Check if a YouTube channel or video is monetized with the monetization checker. Is This Channel or Video Monetized?</p>
         
-        <form class="mt-4" method = "GET" id="your-form-id" onsubmit="event.preventDefault(); prepareCaptcha();">
+        <form class="mt-4" method = "GET">
             <div class="row justify-content-center">
                 {% if video_url %}
                     <div class="col-md-9">
