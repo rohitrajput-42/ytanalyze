@@ -118,9 +118,15 @@
             {% for thumbnail in thumbnails %}
                 <div class="card card-custom">
                     <img src="{{ thumbnail.url }}" class="card-image" alt="Thumbnail">
-                    <div class="card-body">
-                        <h5 class="card-title">Resoulution: {{ thumbnail.width }} x {{ thumbnail.height }}</h5>
+                    <h5 class="card-title mt-4" style="margin: 0; flex-grow: 1;">
+                        <b>Resolution</b>: {{ thumbnail.width }} x {{ thumbnail.height }}
+                    </h5>
+                    <div class="card-body" style="display: flex; justify-content: space-between; align-items: center;">
                         <a href="{{ thumbnail.url }}" target="_blank" class="btn btn-primary btn-sm">View Full Image</a>
+                        <button onclick="downloadImage('{{ thumbnail.url }}', 'thumbnail_{{ forloop.counter }}.jpg')" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                        </a>
                     </div>
                 </div>
             {% endfor %}
@@ -137,6 +143,20 @@
 <script>
     function showLoader() {
       document.getElementById('loader').style.display = 'flex';
+    }
+
+    function downloadImage(url, filename) {
+        fetch(url, {mode: 'cors'})
+        .then(response => response.blob())
+        .then(blob => {
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        })
+        .catch(() => alert('Failed to download image.'));
     }
 </script>
 {% endblock %}
