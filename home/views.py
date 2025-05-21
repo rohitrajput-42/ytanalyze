@@ -343,3 +343,10 @@ def transcript(request):
             context["channel_url"] = channel_url
 
     return render(request, "transcript.html", context)
+
+
+def test_404(request):
+    return render(request, '404.html', status=404)
+
+def test_500(request):
+    return render(request, "500.html", status=500)

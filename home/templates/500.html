@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Server Error - 500{% endblock %}
+{% block main_content %}
+
+<style>
+  #error-500-container {
+    max-width: 600px;
+    margin: 80px auto;
+    background-color: #f9f9f9;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+  #error-500-container h1 {
+    font-size: 5rem;
+    color: #e74c3c; /* a strong red to indicate error */
+    margin-bottom: 15px;
+  }
+  #error-500-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  #error-500-container p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+  }
+  #error-500-container a.btn-home {
+    background-color: #e74c3c;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(231, 76, 60, 0.5);
+    transition: background-color 0.3s ease;
+  }
+  #error-500-container a.btn-home:hover {
+    background-color: #c0392b;
+  }
+  /* Shake animation for the 500 digits */
+  #error-500-container h1 span {
+    display: inline-block;
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both infinite;
+  }
+  #error-500-container h1 span:nth-child(1) { animation-delay: 0s; }
+  #error-500-container h1 span:nth-child(2) { animation-delay: 0.3s; }
+  #error-500-container h1 span:nth-child(3) { animation-delay: 0.6s; }
+
+  @keyframes shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+  }
+</style>
+
+<section id="error-500-container">
+  <h1>
+    <span>5</span><span>0</span><span>0</span>
+  </h1>
+  <h2>Uh-oh! Something went wrong.</h2>
+  <p>Our servers encountered an unexpected error. Please try again later.</p>
+  <a href="{% url 'home' %}" class="btn-home" title="Go back to Home">← Back to Home</a>
+</section>
+
+{% endblock %}

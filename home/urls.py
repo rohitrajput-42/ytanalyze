@@ -14,4 +14,8 @@ urlpatterns = [
     path("disclaimer/", disclaimer, name="disclaimer"),
     path("privacy/", privacy, name="privacy"),
     path("tnc/", tnc, name="tnc"),
+
+    path('test-404/', test_404),
+    path("test-500/", test_500),
+
 ]
