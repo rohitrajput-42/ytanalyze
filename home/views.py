@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import requests
 import yt_dlp
 from yt_dlp import YoutubeDL
@@ -11,6 +11,7 @@ import re
 import json
 import html
 from django.core.mail import send_mail
+from .models import Post
 
 API_KEY = settings.YT_API_KEY
 youtube = build("youtube", "v3", developerKey=API_KEY)
@@ -350,3 +351,13 @@ def test_404(request):
 
 def test_500(request):
     return render(request, "500.html", status=500)
+
+def blog(request):
+
+    posts = Post.objects.all()
+
+    return render(request, "blog.html", {"blogs": posts})
+
+def blog_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request, "blog_detail.html", {"post": post})

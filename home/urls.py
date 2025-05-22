@@ -18,4 +18,7 @@ urlpatterns = [
     path('test-404/', test_404),
     path("test-500/", test_500),
 
+    path("blog/", blog, name="blog"),
+    path("blog/<int:pk>/", blog_detail, name="blog_detail"),
+
 ]
